@@ -7,6 +7,6 @@ import { protect } from "../middlewares/auth.js";
 authRouter.post("/register", signUp);
 authRouter.post("/login", signIn);
 authRouter.post("/profile", protect, updateProfile);
-authRouter.get("/profile", protect, checkAuth);
+authRouter.get("/check", protect, checkAuth);
 
 export default authRouter;
