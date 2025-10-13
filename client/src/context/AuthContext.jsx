@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       const { data } = await axios.get("/api/auth/check");
+
       if (data?.success) {
         setAuthUser(data.user);
         connectSocket(data.user);
@@ -34,9 +35,10 @@ export const AuthProvider = ({ children }) => {
   const login = async (state, credentials) => {
     try {
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
+      console.log(data, "data from login");
       if (data?.success) {
-        setAuthUser(data.userData);
-        connectSocket(data.userData);
+        setAuthUser(data.user);
+        connectSocket(data.user);
         axios.defaults.headers.common["token"] = data.token;
         setToken(data.token);
         localStorage.setItem("token", data.token);
@@ -52,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   // logout function to handle user logout and socket disconnection
 
   const logout = async () => {
-    localStorage.removeItem("token"); 
+    localStorage.removeItem("token");
     setToken(null);
     setAuthUser(null);
     setOnlineUsers([]);

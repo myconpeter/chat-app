@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import assets, { userDummyData } from "../assets/assets";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../context/AuthContext";
 
 const Sidebar = ({ selectedUser, setSelectedUser }) => {
+  const {logout} = useContext(AuthContext)
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleNavigate = (path) => {
+    navigate(path);
+    setIsMenuOpen(false);
+  };
+
+
 
   return (
     <div
@@ -14,23 +24,35 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
       <div className="">
         <div className="flex items-center justify-between">
           <img src={assets.logo} alt="logo" className="max-w-40" />
-          <div className="relative py-2 group">
-            <img src={assets.menu_icon} alt="menu_icon" className="max-h-5 cursor-pointer" />
-            <div
-              className="absolute top-full mt-2 w-40  bg-gray-500 text-black
-             rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-20 p-3 hidden group-hover:block"
-            >
-              <p
-                onClick={() => {
-                  navigate("/profile");
-                }}
-                className="cursor-pointer text-sm"
+
+          <div className="relative py-2">
+            <img
+              src={assets.menu_icon}
+              alt="menu_icon"
+              className="max-h-5 cursor-pointer"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            />
+
+            {isMenuOpen && (
+              <div
+                className="absolute top-full right-0 mt-2 w-40 bg-gray-500 text-black 
+                           rounded shadow-xl z-30 p-3"
               >
-                Edit Profile
-              </p>
-              <hr className="my-2 border-t border-gray-50" />
-              <p className="cursor-pointer text-sm">Logout</p>
-            </div>
+                <p
+                  onClick={() => handleNavigate("/profile")}
+                  className="cursor-pointer text-sm hover:bg-gray-400 p-1 rounded"
+                >
+                  Edit Profile
+                </p>
+                <hr className="my-2 border-t border-gray-100" />
+                <p
+                  onClick={() => {logout()}}
+                  className="cursor-pointer text-sm hover:bg-gray-400 p-1 rounded"
+                >
+                  Logout
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -47,8 +69,8 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
       <div className="flex flex-col gap-3 mt-5 h-[80%] overflow-y-auto pr-2">
         {userDummyData.map((user, index) => (
           <div
-          key={index}
-          onClick={() => setSelectedUser(user)}
+            key={index}
+            onClick={() => setSelectedUser(user)}
             className={`relative flex items-center gap-3 p-2 pl-4 bg-white/10 rounded-lg cursor-pointer hover:bg-white/20 ${
               selectedUser?._id === user._id && "bg-white/20"
             }`}

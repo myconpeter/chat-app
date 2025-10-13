@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 const LoginPage = () => {
   const [currentForm, setCurrentForm] = useState("Sign Up");
@@ -8,27 +10,28 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
 
+  const navigate = useNavigate();
+
   const [submitted, setSubmitted] = useState(false);
+
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!submitted) {
+    if (currentForm === "Sign Up" && !submitted) {
       setSubmitted(true);
-    } else {
-      // Here you can handle the final submission logic, like sending data to a server
-      console.log({
-        fullName,
-        email,
-        password,
-        bio: currentForm === "Sign Up" ? bio : undefined,
-      });
-      // Reset form after submission
-      setFullName("");
-      setEmail("");
-      setPassword("");
-      setBio("");
-      setSubmitted(false);
+      return;
     }
+
+    login(currentForm === "Sign Up" ? "register" : "login", {
+      fullName,
+      email,
+      password,
+      bio,
+    });
+    // window.location.reload();
+    // navigate("/");
+    
   };
 
   return (

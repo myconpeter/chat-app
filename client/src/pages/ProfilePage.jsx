@@ -1,11 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import * as ExifReader from "exifreader";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router";
+import assets from "../assets/assets";
 
 const ProfilePage = () => {
+  const { authUser, updateProfile } = useContext(AuthContext);
+  console.log("Authenticated User:", authUser);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageMetadata, setImageMetadata] = useState(null);
-  const [name, setName] = useState("Micheal Peter");
-  const [bio, setBio] = useState("Hi, everyone i am using quick chat");
+  const [name, setName] = useState(authUser?.fullName || "");
+  const [bio, setBio] = useState(authUser?.bio || "");
+  const navigate = useNavigate();
 
   const extractExifData = async (file) => {
     try {
@@ -101,10 +107,20 @@ const ProfilePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Name:", name);
-    console.log("Bio:", bio);
-    console.log("Selected Image:", selectedImage);
-    console.log("Image Metadata:", imageMetadata);
+    if(!selectedImage){
+      updateProfile({ fullName:name, bio });
+      navigate("/");
+      return
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedImage);
+      reader.onload = async () => {
+        const base64Image = reader.result;
+        updateProfile({ fullName: name, bio, profilePic: base64Image });
+        navigate("/");
+      }
+
+    }
   };
 
   return (
@@ -113,7 +129,7 @@ const ProfilePage = () => {
         <div className="flex flex-col md:flex-row-reverse items-center">
           <div className="p-8 flex items-center justify-center md:w-1/3">
             <div className="w-32 h-32 bg-gradient-to-br from-purple-500 to-violet-600 rounded-full flex items-center justify-center">
-              <span className="text-4xl">💬</span>
+              <img src={authUser.profilePic || assets.avatar_icon} alt="" className="rounded-full"/>
             </div>
           </div>
 
@@ -185,6 +201,7 @@ const ProfilePage = () => {
               Save Profile
             </button>
           </div>
+
         </div>
       </div>
     </div>
