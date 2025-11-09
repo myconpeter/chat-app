@@ -56,9 +56,9 @@ export const getMessages = async (req, res) => {
 // mark message as seen
 export const markAsSeen = async (req, res) => {
   try {
-    const { senderId } = req.params;
+    const { receiverId } = req.params;
 
-    await Message.findByIdAndUpdate(senderId, { seen: true });
+    await Message.findByIdAndUpdate(receiverId, { seen: true });
 
     res.status(200).json({ success: true });
   } catch (error) {
@@ -67,16 +67,17 @@ export const markAsSeen = async (req, res) => {
   }
 };
 
-
 // send message from one user to another
 
 export const sendMessage = async (req, res) => {
   try {
     const senderId = req.user._id;
-    const  receiverId = req.params.id;
+    const receiverId = req.params.id;
     const { text, image } = req.body;
 
-     if (!text && !image) {
+    // console.log("Received message:", { text, image });
+
+    if (!text && !image) {
       return res.status(400).json({ message: "Message cannot be empty" });
     }
 
@@ -87,11 +88,11 @@ export const sendMessage = async (req, res) => {
       imageUrl = uploadedImage.secure_url;
     }
 
-    const newMessage = Message.create({
-        senderId,
-        receiverId,
-        text,
-        image: imageUrl,
+    const newMessage = await Message.create({
+      senderId,
+      receiverId,
+      text,
+      image: imageUrl,
     });
 
     // emit the message to the receiver if online
@@ -106,4 +107,3 @@ export const sendMessage = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-

@@ -61,7 +61,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
-app.use("/api/messages", messageRouter);
+app.use("/api/message", messageRouter);
 
 await connectDB();
 
