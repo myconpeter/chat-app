@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router";
 
 const LoginPage = () => {
   const [currentForm, setCurrentForm] = useState("Sign Up");
@@ -9,8 +8,6 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
-
-  const navigate = useNavigate();
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -29,9 +26,6 @@ const LoginPage = () => {
       password,
       bio,
     });
-    // window.location.reload();
-    // navigate("/");
-    
   };
 
   return (
