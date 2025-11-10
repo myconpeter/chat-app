@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
 dotenv.config();
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://chat-app-uiq2.vercel.app",
 
   credentials: true,
 
@@ -71,4 +71,4 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-export default server; 
+export default server;
